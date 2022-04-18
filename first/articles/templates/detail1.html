@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %} {{article.title}} {% endblock %}
+
+{% block content%}
+
+<h2>{{ article.title }}</h2>
+
+<p>{{ article.text }}</p>
+
+<em>{{ article.pub_date }}</em>
+
+<hr>
+<div class="comments" id="comments">
+{% if all_comment %}
+    {% for c in all_comment %}
+        <div class = "comment" name= "comment">
+            <p>
+
+                <em>Комментатор: </em><strong>{{ c.parent.author_name }}</strong>
+                <p> {{ c.parent.text }} </p>
+
+                <div id="answer{{ c.parent.id }}"  hidden>
+
+                    <form action='' method="POST">
+                        {% csrf_token %}
+
+                        <input type="text" required placeholder="Ваше имя" name="name"><br>
+                        <textarea  name="text" id='text' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
+                        <input type="button" class="sent_button_comment_comment" value="Ответить" id = '{{ c.parent.id }}'>  </input>
+
+                    </form>
+
+
+                </div>
+                <button type="button" class = "answer_button" value="{{ c.parent.id }}" >Ответить</button>
+                <button type="button" class = "cansel_button" value="{{ c.parent.id }}" hidden >Отмена</button>
+
+            </p>
+        </div>
+    {% endfor %}
+{% else %}
+    Комментарии не найдены, станьте первым!
+{% endif %}
+</div>
+<hr>
+
+
+{% endblock %}

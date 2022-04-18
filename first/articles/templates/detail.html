@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+
+{% block title %} {{article.title}} {% endblock %}
+
+{% block content%}
+
+<h2>{{ article.title }}</h2>
+
+<p>{{ article.text }}</p>
+
+<em>{{ article.pub_date }}</em>
+
+<hr>
+<div class="comments" id="comments">
+{% if latest_comments_list %}
+    {% for c in latest_comments_list %}
+        <div class = "comment" name= "comment">
+            <p>
+
+                <em>Комментатор: </em><strong>{{ c.author_name }}</strong>
+                <p> {{c.text}} </p>
+
+                <div id="answer{{ c.id }}"  hidden>
+
+                    <form action='' method="POST">
+                        {% csrf_token %}
+
+                        <input type="text" required placeholder="Ваше имя" name="name"><br>
+                        <textarea  name="text" id='text' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
+                        <input type="button" class="sent_button_comment_comment" value="Ответить" id = '{{ c.id }}'>  </input>
+
+                    </form>
+
+
+                </div>
+                <button type="button" class = "answer_button" value="{{ c.id }}" >Ответить</button>
+                <button type="button" class = "cansel_button" value="{{ c.id }}" hidden >Отмена</button>
+
+            </p>
+        </div>
+    {% endfor %}
+{% else %}
+    Комментарии не найдены, станьте первым!
+{% endif %}
+</div>
+<hr>
+
+<div id="add_comment">
+    <form action='' method="POST">
+        {% csrf_token %}
+
+        <input type="text" id = 'add_name_comment' required placeholder="Ваше имя" name="name"><br>
+        <textarea  name="text" id = 'add_text_comment' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
+        <input type="button" id="sent_button_comment" value="Оставить комментраий"> asd </input>
+
+    </form>
+</div>
+    {% load static %}
+    <script type="text/javascript" src="{% static 'articles/js/jquery-3.6.0.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<script>
+
+
+    document.addEventListener( "click", function ( el )
+        {
+            if ( el.target && el.target.classList.contains( 'answer_button' ) )
+            {
+
+                tmp_text = 'answer'.concat(el.target.value.toString());
+                document.getElementById(tmp_text).hidden = false;
+
+                var answer_button = document.getElementsByClassName('answer_button');
+                var cansel_button = document.getElementsByClassName('cansel_button');
+
+
+
+                for (var i = 0; i < answer_button.length; i++)
+                {
+                   answer_button[i].hidden = true;
+                   if (el.target == answer_button[i])
+                   {
+                        cansel_button[i].hidden = false;
+                   }
+                }
+
+                document.getElementById("add_comment").hidden = true;
+
+            }
+            else if (el.target && el.target.classList.contains( 'cansel_button' ))
+            {
+
+                tmp_text = 'answer'.concat(el.target.value.toString());
+                document.getElementById(tmp_text).hidden = true;
+
+                var answer_button = document.getElementsByClassName('answer_button');
+                var cansel_button = document.getElementsByClassName('cansel_button');
+
+                for (var i = 0; i < answer_button.length; i++)
+                {
+                   answer_button[i].hidden = false;
+                   cansel_button[i].hidden = true;
+                }
+                document.getElementById("add_comment").hidden = false;
+            }
+        }
+    )
+
+    $("#sent_button_comment").click
+    (
+        function ()
+        {
+
+            username = $("#add_name_comment").val();
+            text = $("#add_text_comment").val();
+            article_id = {{ article.id }};
+            console.log('check');
+
+            sent_data =
+            {
+                "username": username,
+                "text": text,
+                "article_id": article_id,
+                "csrfmiddlewaretoken":"{{ csrf_token }}",
+            };
+            url = "{% url 'articles:ajax_post_data' %}";
+            $.ajax
+            (
+                {
+                    url:url,
+                    type:"post",
+                    data:sent_data,
+                    success:function (data)
+                    {
+
+                        var article_div = document.querySelector("div.comments");
+                        console.log(article_div);
+                        while(article_div.firstChild)
+                        {
+                            article_div.removeChild(article_div.firstChild);
+                        }
+
+
+                        for( k in data)
+                        {
+                            if (data[k].author_name != null)
+                            {
+
+<!--                            <div class = "comment" name= "comment"> То что создаю-->
+                                var comment = document.createElement("div");
+                                comment.setAttribute('class', 'comment');
+                                comment.setAttribute('name', 'comment');
+
+                                var username = document.createElement("strong");
+                                var add_text_comment = document.createElement("p");
+                                var p = document.createElement("p");
+
+                                var em = document.createElement("em");
+                                em.textContent = 'Комментатор: ';
+                                p.appendChild(em);
+
+                                username.textContent = data[k].author_name;
+                                add_text_comment.textContent = data[k].text;
+
+
+                                p.appendChild(username);
+                                p.appendChild(add_text_comment);
+
+
+<!--                            <div id="answer{{ c.id }}"  hidden>-->
+                                var answer_div = document.createElement('div');
+                                tmp_text = 'answer'.concat(data[k].id.toString());
+                                answer_div.setAttribute('id', tmp_text);
+                                answer_div.hidden = true;
+
+<!--                     <form action='' method="POST">-->
+<!--                        {% csrf_token %}-->
+
+<!--                        <input type="text" required placeholder="Ваше имя" name="name"><br>-->
+<!--                        <textarea  name="text" required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>-->
+<!--                        <input type="button" id="sent_button_comment_comment" value="Оставить комментраий">  </input>-->
+
+<!--                    </form>-->
+
+                                var form = document.createElement('form');
+                                form.setAttribute('method', "POST");
+
+                                var csrfmiddlewaretoken = document.createElement('input');
+                                csrfmiddlewaretoken.setAttribute('value', "{{ csrf_token }}");
+                                csrfmiddlewaretoken.setAttribute('name', "csrfmiddlewaretoken");
+                                csrfmiddlewaretoken.hidden = true;
+                                form.appendChild(csrfmiddlewaretoken)
+
+                                var br = document.createElement('br');
+                                form.appendChild(br)
+
+                                var add_name_comment_comment = document.createElement('input');
+                                add_name_comment_comment.setAttribute('type', "text");
+                                add_name_comment_comment.setAttribute('placeholder', "Ваше имя");
+                                add_name_comment_comment.setAttribute('name', "name");
+                                add_name_comment_comment.required = true;
+                                form.appendChild(add_name_comment_comment)
+
+                                var br = document.createElement('br');
+                                form.appendChild(br)
+
+                                var add_text_comment_comment = document.createElement('textarea');
+                                add_text_comment_comment.setAttribute('cols', 20);
+                                add_text_comment_comment.setAttribute('rows', 8);
+                                add_text_comment_comment.setAttribute('placeholder', "Текст комментрия");
+                                add_text_comment_comment.setAttribute('name', "text");
+                                add_text_comment_comment.required = true;
+                                form.appendChild(add_text_comment_comment)
+
+                                var br = document.createElement('br');
+                                form.appendChild(br)
+
+                                var sent_button_comment_comment = document.createElement('input');
+                                sent_button_comment_comment.setAttribute('class', "sent_button_comment_comment");
+                                sent_button_comment_comment.setAttribute('type', "button");
+                                sent_button_comment_comment.setAttribute('id', data[k].id);
+                                sent_button_comment_comment.setAttribute('value', 'Ответить');
+
+                                form.appendChild(sent_button_comment_comment)
+
+                                answer_div.appendChild(form)
+
+<!--                <button type="button" class = "cansel_button" value="{{ c.id }}" hidden >Отмена</button>-->
+                                var cansel_button = document.createElement('button');
+                                cansel_button.setAttribute('class', 'cansel_button');
+                                cansel_button.setAttribute('type', 'button');
+                                cansel_button.setAttribute('value', data[k].id);
+                                cansel_button.textContent = 'Отмена';
+                                cansel_button.hidden = true;
+
+
+<!--                <button type="answer_button" class = "answer_button" value="{{ c.id }}" >Ответить</button>-->
+                                var answer_button = document.createElement('button');
+                                answer_button.setAttribute('class', 'answer_button');
+                                answer_button.setAttribute('type', 'button');
+                                answer_button.setAttribute('value', data[k].id);
+                                answer_button.textContent = 'Ответить';
+
+                                p.appendChild(answer_div);
+                                p.appendChild(answer_button);
+                                p.appendChild(cansel_button);
+
+                                comment.appendChild(p);
+
+                                article_div.appendChild(comment);
+                            }
+                        }
+
+
+                        document.getElementById("add_text_comment").value = "";
+                        document.getElementById("add_name_comment").value = "";
+
+                        var article_div = document.querySelector("div.comments");
+                        console.log(article_div)
+                    },
+                    error:function (error)
+                    {
+                        console.log(error);
+                    }
+                }
+            )
+
+        }
+    )
+
+
+</script>
+{% endblock %}
