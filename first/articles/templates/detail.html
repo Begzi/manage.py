@@ -47,7 +47,8 @@
 
                                     <input type="text" id="add_name_comment_comment_comment" required placeholder="Ваше имя" name="name"><br>
                                     <textarea  name="text" id='add_text_comment_comment_comment' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
-                                    <input type="button" class="sent_button_comment" value="Ответить" id = '{{ x.parent.id }}'>  </input>
+                                    <input type="button" id=2 class="sent_button_comment" value="Оставить комментраий" >  </input>
+<!--                                    <input type="button" class="sent_button_comment" value="Ответить" id = '{{ x.parent.id }}'>  </input>-->
 
                                 </form>
 
@@ -69,7 +70,8 @@
 
                         <input type="text" id="add_name_comment_comment" required placeholder="Ваше имя" name="name"><br>
                         <textarea  name="text" id='add_text_comment_comment' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
-                        <input type="button" id=1 class="sent_button_comment" value="Ответить" id = '{{ c.parent.id }}'>  </input>
+<!--                        <input type="button" class="sent_button_comment" value="Ответить" id = '{{ c.parent.id }}'>  </input>-->
+                        <input type="button" id=1 class="sent_button_comment" value="Оставить комментраий" >  </input>
 
                     </form>
 
@@ -124,12 +126,19 @@
                 document.getElementById(tmp_text).hidden = false;
 
                 var parent = el.target.parentNode;
+                var tmp = parent.childNotes
+                console.log(tmp)
+                for (var ch in parent.childNotes)
+                {
+                    console.log(parent.childNotes[ch])
+<!--                    child[ch].hidden = false;-->
+                }
                 console.log(parent);
-                var child = parent.getElementsByTagName('div');
+                var child = parent.querySelectorAll('div.comment_comment');
                 console.log(child);
                 for (var ch in child)
                 {
-                    console.log(child[ch])
+                    console.log(child[ch]);
                     child[ch].hidden = false;
                 }
 
