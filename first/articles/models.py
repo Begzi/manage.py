@@ -20,7 +20,7 @@ class Comment(models.Model):
     article = models.ForeignKey(Article, on_delete= models.CASCADE)
 
 
-    parent = models.CharField('Родители комментария',max_length= 200)
+    parents_id = models.CharField('Родители комментария',max_length= 200)
     # path = ArrayField(models.IntegerField)  #Для PostgeSQL
     active = models.BooleanField(default=True)
     author_name = models.CharField('Имя автора', max_length= 50)

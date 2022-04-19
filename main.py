@@ -11,6 +11,11 @@ def print_hi(name):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    import json
+
+    aList = [[{'a': 1, 'b': 2}], [{'c': 3, 'd': 4}]]
+    jsonStr = json.dumps(aList)
+    print(jsonStr)
+    print(jsonStr[0])
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

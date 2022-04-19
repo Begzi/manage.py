@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block title %} {{article.title}} {% endblock %}
-
 {% block content%}
 
 <h2>{{ article.title }}</h2>
@@ -14,12 +13,36 @@
 <div class="comments" id="comments">
 {% if all_comment %}
     {% for c in all_comment %}
-        <div class = "comment" name= "comment">
+        <div class = "comment" name= "comment" value = 'c.parent.id'>
             <p>
 
                 <em>Комментатор: </em><strong>{{ c.parent.author_name }}</strong>
                 <p> {{ c.parent.text }} </p>
 
+                {% if c.child %}
+
+                        {% for x in c.child %}
+                            <div class="comment_comment" name="comment_comment" value="{{ x.parent.id }}" hidden>
+
+                                <em>Комментатор: </em><strong>{{ x.parent.author_name }}</strong>
+                                <p> {{ x.parent.text }} </p>
+
+<!--                                <div answer анадлш-->
+                                    {% if x.child %}
+
+                                            {% for y in x.child %}
+                                                <div class="comment_comment_comment" name="comment_comment_comment" value="{{ y.id }}" hidden >
+
+                                                    <em>Комментатор: </em><strong>{{ y.author_name }}</strong>
+                                                    <p> {{ y.text }} </p>
+
+                                                </div>
+                                            {% endfor %}
+                                    {% endif %}
+
+                            </div>
+                        {% endfor %}
+                {% endif %}
                 <div id="answer{{ c.parent.id }}"  hidden>
 
                     <form action='' method="POST">
@@ -45,5 +68,18 @@
 </div>
 <hr>
 
+<style>
+   .comment_comment {
+    position: relative; /* Относительное позиционирование */
+    background: #f0f0f0; /* Цвет фона */
+    left: 20px
+   }
+   .comment_comment_comment {
+
+    position: relative; /* Относительное позиционирование */
+    background: #f0f0ff; /* Цвет фона */
+    left: 40px
+   }
+  </style>
 
 {% endblock %}
