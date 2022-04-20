@@ -109,27 +109,33 @@ def ajax_post_data(request):
     username = request.POST['username']
     text = request.POST['text']
     article_id = request.POST['article_id']
+    parent_id = request.POST['parent_id']
     if len(username) ==0 or len(text) ==0:
         result['code'] = 10001
         result['content'] = 'Параметр запроса пуст'
     else:
         try:
-            a = Article.objects.get(id = article_id)
-            a.comment_set.create(author_name= username, text = text)
-            latest_comments_list = a.comment_set.order_by('-id')[:10]
-            latest_comment = a.comment_set.get(author_name= username, text = text)
-            print(latest_comment)
-
-            # i = 0
-            # for el in latest_comments_list:
-            #     comment = personToDictionary(el)
-            #     result[i] = comment
-            #     i = i + 1
+            if(parent_id == ''):
+                a = Article.objects.get(id = article_id)
+                a.comment_set.create(author_name= username, text = text)
+                latest_comment = a.comment_set.get(author_name= username, text = text)
+                print(latest_comment)
 
 
-            result['code'] = 10000
-            result['content'] = 'Успешно добавленные данные'
-            result['id'] = latest_comment.id
+
+                result['code'] = 10000
+                result['content'] = 'Успешно добавленные данные'
+                result['id'] = latest_comment.id
+            else:
+
+                a = Article.objects.get(id = article_id)
+                a.comment_set.create(author_name= username, text = text, parents_id= parent_id, active= False)
+                latest_comment = a.comment_set.get(author_name= username, text = text)
+                result['code'] = 10000
+                result['content'] = 'Успешно добавленные данные'
+                result['parents_id'] = str(latest_comment.parents_id) + '+' + str(latest_comment.id)
+                result['id'] = (latest_comment.id)
+                print(str(latest_comment.parent_id) + '+' + str(latest_comment.id))
         except:
             result['code'] = 10002
             result['content'] = 'Ошибка добавления данных'

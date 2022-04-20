@@ -14,7 +14,7 @@
 <div class="comments" id="comments">
 {% if all_comment %}
     {% for c in all_comment %}
-        <div class = "comment" name= "comment" value = '{{ c.parent.id }}'>
+        <div class = "comment_1" name= "comment" value = '{{ c.parent.id }}' >
             <p>
 
                 <em>Комментатор: </em><strong>{{ c.parent.author_name }}</strong>
@@ -23,43 +23,68 @@
                 {% if c.child %}
 
                         {% for x in c.child %}
-                            <div class="comment_comment" name="comment_comment" value="{{ x.parent.id }}" style="left: 20px" hidden>
+                            <div class="comment_2" name="comment_2" value="{{ c.parent.id }}+{{ x.parent.id }}"  hidden>
+                                <p>
+                                    <em>Комментатор: </em><strong>{{ x.parent.author_name }}</strong>
+                                    <p> {{ x.parent.text }} </p>
 
-                                <em>Комментатор: </em><strong>{{ x.parent.author_name }}</strong>
-                                <p> {{ x.parent.text }} </p>
+        <!--                                <div answer анадлш-->
+                                        {% if x.child %}
 
-<!--                                <div answer анадлш-->
+                                                {% for y in x.child %}
+                                                    <div class="comment_3" name="comment_3" value="{{ c.parent.id }}+{{ x.parent.id }}+{{ y.id }}"  hidden >
+                                                        <p>
+                                                            <em>Комментатор: </em><strong>{{ y.author_name }}</strong>
+                                                            <p> {{ y.text }} </p>
+                                                            <div id="answer{{ y.parent.id }}"  hidden>
+
+                                                                <form action='' method="POST">
+                                                                    {% csrf_token %}
+
+                                                                    <input type="text" id="add_name_comment_4_{{ c.parent.id }}+{{ x.parent.id }}+{{ y.id }}" required placeholder="Ваше имя" name="name"><br>
+                                                                    <textarea  name="text" id='add_text_comment_4_{{ c.parent.id }}+{{ x.parent.id }}+{{ y.id }}' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
+                                                                    <input type="button" id=4 class="sent_button_comment" value="Оставить комментраий" >  </input>
+                                <!--                                    <input type="button" class="sent_button_comment" value="Ответить" id = '{{ x.parent.id }}'>  </input>-->
+
+                                                                </form>
+
+
+                                                            </div>
+
+                                                            <button type="button" class = "answer_button" value="{{ y.parent.id }}" >Ответить</button>
+                                                            {% if y.child %}
+                                                                <button type="button" class = "answer_show_button" value="4" >Посмотреть ответы</button>
+                                                                <button type="button" class = "answer_close_button" value="4" hidden>Закрыть</button>
+                                                            {% endif %}
+                                                            <button type="button" class = "cansel_button" value="{{ x.parent.id }}" hidden >Отмена</button>
+                                                        <br>
+                                                        </p>
+                                                    </div>
+                                                {% endfor %}
+                                        {% endif %}
+                                    <div id="answer{{ x.parent.id }}"  hidden>
+
+                                        <form action='' method="POST">
+                                            {% csrf_token %}
+
+                                            <input type="text" id="add_name_comment_3_{{ c.parent.id }}+{{ x.parent.id }}" required placeholder="Ваше имя" name="name"><br>
+                                            <textarea  name="text" id='add_text_comment_3_{{ c.parent.id }}+{{ x.parent.id }}' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
+                                            <input type="button" id=3 class="sent_button_comment" value="Оставить комментраий" >  </input>
+        <!--                                    <input type="button" class="sent_button_comment" value="Ответить" id = '{{ x.parent.id }}'>  </input>-->
+
+                                        </form>
+
+
+                                    </div>
+
+                                    <button type="button" class = "answer_button" value="{{ x.parent.id }}" >Ответить</button>
                                     {% if x.child %}
-
-                                            {% for y in x.child %}
-                                                <div class="comment_comment_comment" name="comment_comment_comment" value="{{ y.id }}" style="left: 40px" hidden >
-
-                                                    <em>Комментатор: </em><strong>{{ y.author_name }}</strong>
-                                                    <p> {{ y.text }} </p>
-
-                                                </div>
-                                            {% endfor %}
+                                        <button type="button" class = "answer_show_button" value="3" >Посмотреть ответы</button>
+                                        <button type="button" class = "answer_close_button" value="3" hidden>Закрыть</button>
                                     {% endif %}
-                            <div id="answer{{ x.parent.id }}"  hidden>
-
-                                <form action='' method="POST">
-                                    {% csrf_token %}
-
-                                    <input type="text" id="add_name_comment_comment_comment" required placeholder="Ваше имя" name="name"><br>
-                                    <textarea  name="text" id='add_text_comment_comment_comment' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
-                                    <input type="button" id=2 class="sent_button_comment" value="Оставить комментраий" >  </input>
-<!--                                    <input type="button" class="sent_button_comment" value="Ответить" id = '{{ x.parent.id }}'>  </input>-->
-
-                                </form>
-
-
-                            </div>
-                            <button type="button" class = "answer_button" value="{{ x.parent.id }}" >Ответить</button>
-                            {% if x.child %}
-                                <button type="button" class = "answer_show_button" value="{{ x.parent.id }}" >Посмотреть ответы</button>
-                                <button type="button" class = "answer_close_button" id='answer_close_button{{ x.parent.id }}' value="{{ x.parent.id }}" hidden>Закрыть</button>
-                            {% endif %}
-                            <button type="button" class = "cansel_button" value="{{ x.parent.id }}" hidden >Отмена</button>
+                                    <button type="button" class = "cansel_button" value="{{ x.parent.id }}" hidden >Отмена</button>
+                                </p>
+                            <br>
                             </div>
                         {% endfor %}
                 {% endif %}
@@ -68,19 +93,20 @@
                     <form action='' method="POST">
                         {% csrf_token %}
 
-                        <input type="text" id="add_name_comment_comment" required placeholder="Ваше имя" name="name"><br>
-                        <textarea  name="text" id='add_text_comment_comment' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
+                        <input type="text" id="add_name_comment_2_{{ c.parent.id }}" required placeholder="Ваше имя" name="name"><br>
+                        <textarea  name="text" id='add_text_comment_2_{{ c.parent.id }}' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
 <!--                        <input type="button" class="sent_button_comment" value="Ответить" id = '{{ c.parent.id }}'>  </input>-->
-                        <input type="button" id=1 class="sent_button_comment" value="Оставить комментраий" >  </input>
+                        <input type="button" id=2 class="sent_button_comment" value="Оставить комментраий" >  </input>
 
                     </form>
 
 
                 </div>
+
                 <button type="button" class = "answer_button" value="{{ c.parent.id }}" >Ответить</button>
                 {% if c.child %}
-                    <button type="button" class = "answer_show_button" value="{{ c.parent.id }}" >Посмотреть ответы</button>
-                    <button type="button" class = "answer_close_button" id='answer_close_button{{ c.parent.id }}' value="{{ c.parent.id }}" hidden>Закрыть</button>
+                    <button type="button" class = "answer_show_button" value="2" >Посмотреть ответы</button>
+                    <button type="button" class = "answer_close_button"  value="2" hidden>Закрыть</button>
                 {% endif %}
                 <button type="button" class="cansel_button" value="{{ c.parent.id }}" hidden >Отмена</button>
 
@@ -97,72 +123,110 @@
     <form action='' method="POST">
         {% csrf_token %}
 
-        <input type="text" id = 'add_name_comment' required placeholder="Ваше имя" name="name"><br>
-        <textarea  name="text" id = 'add_text_comment' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
-        <input type="button" id=0 class="sent_button_comment" value="Оставить комментраий"> </input>
+        <input type="text" id = 'add_name_comment_1' required placeholder="Ваше имя" name="name"><br>
+        <textarea  name="text" id = 'add_text_comment_1' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
+        <input type="button" id=1 class="sent_button_comment" value="Оставить комментраий"> </input>
 
     </form>
 </div>
 
 
+<style>
+<!--    button-->
+<!--    {-->
+<!--        position: relative;-->
+<!--        top: 5px;-->
 
+<!--    }-->
+
+
+<!--    .comment_comment-->
+<!--    {-->
+<!--        position: relative;-->
+
+<!--        background: #ECF5E4; /* Цвет фона */-->
+<!--    }-->
+
+<!--    .comment_comment_comment-->
+<!--    {-->
+<!--        position: relative;-->
+<!--        left: 40px;-->
+<!--    }-->
+</style>
 
 
     {% load static %}
     <script type="text/javascript" src="{% static 'articles/js/jquery-3.6.0.min.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!--    <script type="text/javascript" src="{% static 'articles/js/detail.js' %}"></script>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>-->
+
+
+
 <script>
 
 
-    document.addEventListener( "click", function ( el )
+    document.addEventListener
+    ( "click", function ( el )
         {
 
             if ( el.target && el.target.classList.contains( 'answer_show_button' ) )
             {
                 el.target.hidden = true;
-                tmp_text = 'answer_close_button'.concat(el.target.value.toString());
 
-<!--               Кнопка отмены просмотра комментария, назвывается answer_close_button + id-->
-                document.getElementById(tmp_text).hidden = false;
 
                 var parent = el.target.parentNode;
-                var tmp = parent.childNotes
-                console.log(tmp)
-                for (var ch in parent.childNotes)
+
+                name_div ='div.comment_'.concat(el.target.value.toString())
+                var child = parent.querySelectorAll(name_div);
+                for (var ch = 0; ch < child.length; ch++ )
                 {
-                    console.log(parent.childNotes[ch])
-<!--                    child[ch].hidden = false;-->
-                }
-                console.log(parent);
-                var child = parent.querySelectorAll('div.comment_comment');
-                console.log(child);
-                for (var ch in child)
-                {
-                    console.log(child[ch]);
+                    child[ch].style.position = 'relative';
+                    child[ch].style.left = '20px';
                     child[ch].hidden = false;
+
                 }
 
+
+<!--               Кнопка отмены просмотра комментария, класс назвывается answer_close_button последний -->
+
+                var child = parent.querySelectorAll('button.answer_close_button');
+                child[child.length - 1].hidden = false;
 
             }
             if ( el.target && el.target.classList.contains( 'answer_close_button' ) )
             {
+<!--                el.target.hidden = true;-->
 
-                el.target.hidden = true;
-                var answer_show_button = document.getElementsByClassName('answer_show_button');
-
-                for (var i = 0; i < answer_show_button.length; i++)
-                {
-                   answer_show_button[i].hidden = false;
-                }
                 var parent = el.target.parentNode;
-                console.log(parent);
-                var child = parent.getElementsByTagName('div');
-                console.log(child);
+
+                var child = parent.querySelectorAll('button.answer_show_button');
+                var child_1 = parent.querySelectorAll('button.answer_close_button');
+
+                for (var ch = 0; ch < child.length; ch++ )
+                {
+                    child[ch].hidden = false;
+                    child_1[ch].hidden =true;
+                }
+
+
+                child = parent.getElementsByTagName('div');
                 for (var ch in child)
                 {
-                    console.log(child[ch])
                     child[ch].hidden = true;
                 }
+
+
+                var cansel_button = parent.getElementsByClassName('cansel_button');
+
+                for (var i = 0; i < cansel_button.length; i++)
+                {
+                    if (cansel_button[i].hidden == false)
+                    {
+                        (cansel_button[i].click());
+                    }
+                }
+
+<!--                cansel_button-->
             }
             else if ( el.target && el.target.classList.contains( 'answer_button' ) )
             {
@@ -208,24 +272,25 @@
         }
     )
 
-    $(".sent_button_comment").click
+
+     $(".sent_button_comment").click
     (
         function (obj)
         {
 
             console.log(obj.target.id)
-            if (obj.target.id == 0)
+            if (obj.target.id == 1)
             {
-                username = $("#add_name_comment").val();
-                text = $("#add_text_comment").val();
+                username_comment = $("#add_name_comment_1").val();
+                text_comment = $("#add_text_comment_1").val();
                 article_id = {{ article.id }};
-                console.log('check');
 
                 sent_data =
                 {
-                    "username": username,
-                    "text": text,
+                    "username": username_comment,
+                    "text": text_comment,
                     "article_id": article_id,
+                    "parent_id": '',
                     "csrfmiddlewaretoken":"{{ csrf_token }}",
                 };
                 url = "{% url 'articles:ajax_post_data' %}";
@@ -241,7 +306,6 @@
                             var article_div = document.querySelector("div.comments");
                             if (article_div.children.length > 10)
                             {
-                                console.log(article_div.lastElementChild);
                                 article_div.removeChild( article_div.lastElementChild)
                             }
 
@@ -264,8 +328,8 @@
                                     p.appendChild(em);
 
 
-                                    author_name = document.getElementById("add_text_comment").value;
-                                    comment_text = document.getElementById("add_name_comment").value;
+                                    author_name = username_comment;
+                                    comment_text = text_comment;
 
                                     username.textContent = author_name;
                                     add_text_comment.textContent = comment_text;
@@ -281,14 +345,14 @@
                                     answer_div.setAttribute('id', tmp_text);
                                     answer_div.hidden = true;
 
-    <!--                     <form action='' method="POST">-->
-    <!--                        {% csrf_token %}-->
+<!--                                   <form action='' method="POST">-->
+<!--                                        {% csrf_token %}-->
 
-    <!--                        <input type="text" required placeholder="Ваше имя" name="name"><br>-->
-    <!--                        <textarea  name="text" required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>-->
-    <!--                        <input type="button" id="sent_button_comment_comment" value="Оставить комментраий">  </input>-->
+<!--                                        <input type="text" id="add_name_comment_2_{{ c.parent.id }}" required placeholder="Ваше имя" name="name"><br>-->
+<!--                                        <textarea  name="text" id='add_text_comment_2_{{ c.parent.id }}' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>-->
+<!--                                        <input type="button" id=2 class="sent_button_comment" value="Оставить комментраий" >  </input>-->
 
-    <!--                    </form>-->
+<!--                                    </form>-->
 
                                     var form = document.createElement('form');
                                     form.setAttribute('method', "POST");
@@ -303,34 +367,34 @@
                                     var br = document.createElement('br');
                                     form.appendChild(br)
 
-                                    var add_name_comment_comment = document.createElement('input');
-                                    add_name_comment_comment.setAttribute('type', "text");
-                                    add_name_comment_comment.setAttribute('placeholder', "Ваше имя");
-                                    add_name_comment_comment.setAttribute('name', "name");
-                                    add_name_comment_comment.required = true;
-                                    form.appendChild(add_name_comment_comment)
+                                    var add_name_comment_2 = document.createElement('input');
+                                    add_name_comment_2.setAttribute('type', "text");
+                                    add_name_comment_2.setAttribute('placeholder', "Ваше имя");
+                                    add_name_comment_2.setAttribute('name', "name");
+                                    add_name_comment_2.required = true;
+                                    form.appendChild(add_name_comment_2)
 
                                     var br = document.createElement('br');
                                     form.appendChild(br)
 
-                                    var add_text_comment_comment = document.createElement('textarea');
-                                    add_text_comment_comment.setAttribute('cols', 20);
-                                    add_text_comment_comment.setAttribute('rows', 8);
-                                    add_text_comment_comment.setAttribute('placeholder', "Текст комментрия");
-                                    add_text_comment_comment.setAttribute('name', "text");
-                                    add_text_comment_comment.required = true;
-                                    form.appendChild(add_text_comment_comment)
+                                    var add_text_comment_2 = document.createElement('textarea');
+                                    add_text_comment_2.setAttribute('cols', 20);
+                                    add_text_comment_2.setAttribute('rows', 8);
+                                    add_text_comment_2.setAttribute('placeholder', "Текст комментрия");
+                                    add_text_comment_2.setAttribute('name', "text");
+                                    add_text_comment_2.required = true;
+                                    form.appendChild(add_text_comment_2)
 
                                     var br = document.createElement('br');
                                     form.appendChild(br)
 
-                                    var sent_button_comment_comment = document.createElement('input');
-                                    sent_button_comment_comment.setAttribute('class', "sent_button_comment");
-                                    sent_button_comment_comment.setAttribute('type', "button");
-                                    sent_button_comment_comment.setAttribute('id', 1);
-                                    sent_button_comment_comment.setAttribute('value', 'Ответить');
+                                    var sent_button_comment_2 = document.createElement('input');
+                                    sent_button_comment_2.setAttribute('class', "sent_button_comment");
+                                    sent_button_comment_2.setAttribute('type', "button");
+                                    sent_button_comment_2.setAttribute('id', 2);
+                                    sent_button_comment_2.setAttribute('value', 'Ответить');
 
-                                    form.appendChild(sent_button_comment_comment)
+                                    form.appendChild(sent_button_comment_2)
 
                                     answer_div.appendChild(form)
 
@@ -343,7 +407,7 @@
                                     cansel_button.hidden = true;
 
 
-    <!--                <button type="answer_button" class = "answer_button" value="{{ c.id }}" >Ответить</button>-->
+<!--<                   button type="button" class = "answer_button" value="{{ c.parent.id }}" >Ответить</button>-->
                                     var answer_button = document.createElement('button');
                                     answer_button.setAttribute('class', 'answer_button');
                                     answer_button.setAttribute('type', 'button');
@@ -355,17 +419,15 @@
                                     p.appendChild(cansel_button);
 
                                     comment.appendChild(p);
-                                    console.log(comment)
                                     article_div.insertBefore( comment , article_div.firstElementChild)
                                 }
 
 
 
-                            document.getElementById("add_text_comment").value = "";
-                            document.getElementById("add_name_comment").value = "";
+                            document.getElementById("add_text_comment_1").value = "";
+                            document.getElementById("add_name_comment_1").value = "";
 
                             var article_div = document.querySelector("div.comments");
-                            console.log(article_div)
                         },
                         error:function (error)
                         {
@@ -374,9 +436,221 @@
                     }
                 )
             }
+
+            else
+            {
+                var parent = obj.target.parentNode.parentNode.parentNode;
+                parent_id = (parent.getAttribute('value').toString());
+
+
+                var name_input ='add_name_comment_'.concat(obj.target.id.toString()).concat('_').concat(parent.getAttribute('value').toString());
+                var text_area ='add_text_comment_'.concat(obj.target.id.toString()).concat('_').concat(parent.getAttribute('value').toString());
+
+
+                document.getElementById(tmp_text).hidden = false;
+                username_comment =  document.getElementById(name_input).value;
+                text_comment =  document.getElementById(text_area).value;
+                article_id = {{ article.id }};
+
+
+
+                sent_data =
+                {
+                    "username": username_comment,
+                    "text": text_comment,
+                    "article_id": article_id,
+                    "parent_id": parent_id,
+                    "csrfmiddlewaretoken":"{{ csrf_token }}",
+                };
+                url = "{% url 'articles:ajax_post_data' %}";
+                $.ajax
+                (
+                    {
+
+                        url:url,
+                        type:"post",
+                        data:sent_data,
+                        success:function (data)
+                        {
+
+                            div_name = 'div.comment_'.concat(obj.target.getAttribute('id').toString());
+                            var lvl_comment = (obj.target.getAttribute('id').toString())
+
+
+                            if (data['id'] != null)
+                            {
+
+
+<!--                                    <div class = "comment_#" name= "comment_#" value = 'c.parent.id'> То что создаю&ndash;&gt;-->
+                                    var comment = document.createElement("div");
+                                    comment.setAttribute('class', 'comment_'.concat(lvl_comment));
+                                    comment.setAttribute('name', 'comment_'.concat(lvl_comment));
+                                    comment.setAttribute('value', data["parents_id"]);
+                                    comment.style.position = 'relative';
+                                    comment.style.left = '20px';
+                                    comment.hidden = false;
+
+
+                                    var username = document.createElement("strong");
+                                    var add_text_comment = document.createElement("p");
+                                    var p = document.createElement("p");
+
+                                    var em = document.createElement("em");
+                                    em.textContent = 'Комментатор: ';
+                                    p.appendChild(em);
+
+
+                                    author_name = username_comment;
+                                    comment_text = text_comment;
+
+                                    username.textContent = author_name;
+                                    add_text_comment.textContent = comment_text;
+
+
+                                    p.appendChild(username);
+                                    p.appendChild(add_text_comment);
+
+
+    <!--                            <div id="answer{{ c.parent.id  }}"  hidden>-->
+                                    var answer_div = document.createElement('div');
+                                    div_answer_name = 'answer'.concat(data['parents_id'].toString());
+                                    answer_div.setAttribute('id', div_answer_name);
+                                    answer_div.hidden = true;
+
+<!--                                   <form action='' method="POST">-->
+<!--                                        {% csrf_token %}-->
+
+<!--                                        <input type="text" id="add_name_comment_2_{{ c.parent.id }}" required placeholder="Ваше имя" name="name"><br>-->
+<!--                                        <textarea  name="text" id='add_text_comment_2_{{ c.parent.id }}' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>-->
+<!--                                        <input type="button" id=2 class="sent_button_comment" value="Оставить комментраий" >  </input>-->
+
+<!--                                    </form>-->
+
+                                    var form = document.createElement('form');
+                                    form.setAttribute('method', "POST");
+                                    form.action = true;
+
+                                    var csrfmiddlewaretoken = document.createElement('input');
+                                    csrfmiddlewaretoken.setAttribute('value', "{{ csrf_token }}");
+                                    csrfmiddlewaretoken.setAttribute('name', "csrfmiddlewaretoken");
+                                    csrfmiddlewaretoken.hidden = true;
+                                    form.appendChild(csrfmiddlewaretoken)
+
+                                    var br = document.createElement('br');
+                                    form.appendChild(br)
+
+                                    var add_name_comment = document.createElement('input');
+                                    add_name_comment.setAttribute('type', "text");
+                                    add_name_comment.setAttribute('placeholder', "Ваше имя");
+                                    add_name_comment.setAttribute('id', 'add_name_comment_'.concat(lvl_comment).concat('_').concat(data['id'].toString()));
+                                    add_name_comment.setAttribute('name', "name");
+                                    add_name_comment.required = true;
+                                    form.appendChild(add_name_comment)
+
+                                    var br = document.createElement('br');
+                                    form.appendChild(br)
+
+                                    var add_text_comment = document.createElement('textarea');
+                                    add_text_comment.setAttribute('cols', 20);
+                                    add_text_comment.setAttribute('rows', 8);
+                                    add_text_comment.setAttribute('placeholder', "Текст комментрия");
+                                    add_text_comment.setAttribute('id', 'add_text_comment_'.concat(lvl_comment).concat('_').concat(data['id'].toString()));
+                                    add_text_comment.setAttribute('name', "text");
+                                    add_text_comment.required = true;
+                                    form.appendChild(add_text_comment)
+
+                                    var br = document.createElement('br');
+                                    form.appendChild(br)
+
+                                    var sent_button_comment = document.createElement('input');
+                                    sent_button_comment.setAttribute('class', "sent_button_comment");
+                                    sent_button_comment.setAttribute('type', "button");
+                                    sent_button_comment.setAttribute('id', lvl_comment);
+                                    sent_button_comment.setAttribute('value', 'Ответить');
+
+                                    form.appendChild(sent_button_comment)
+
+                                    answer_div.appendChild(form)
+
+    <!--                <button type="button" class = "cansel_button" value="{{ c.parent.id }}" hidden >Отмена</button>-->
+                                    var cansel_button = document.createElement('button');
+                                    cansel_button.setAttribute('class', 'cansel_button');
+                                    cansel_button.setAttribute('type', 'button');
+                                    cansel_button.setAttribute('value', data['parents_id']);
+                                    cansel_button.textContent = 'Отмена';
+                                    cansel_button.hidden = true;
+
+
+<!--<                   button type="button" class = "answer_button" value="{{ c.parent.id }}" >Ответить</button>-->
+                                    var answer_button = document.createElement('button');
+                                    answer_button.setAttribute('class', 'answer_button');
+                                    answer_button.setAttribute('type', 'button');
+                                    answer_button.setAttribute('value', data['parents_id']);
+                                    answer_button.textContent = 'Ответить';
+
+                                    p.appendChild(answer_div);
+                                    p.appendChild(answer_button);
+                                    p.appendChild(cansel_button);
+
+                                    comment.appendChild(p);
+
+    <!--                         Для проверки ответов комментарии, если есть, поверх-->
+
+                                    var childs = parent.querySelectorAll(div_name)
+                                    if (childs.length == 0)
+                                    {
+                                        childs = parent.querySelectorAll('div')
+                                        parent.insertBefore( comment , childs[0])
+                                    }
+                                    else
+                                    {
+                                        parent.insertBefore( comment , childs[0])
+                                    }
+
+
+                                var form = obj.target.parentNode;
+                                var ageElems = form.elements.name;
+                                var tageElems = form.elements.text;
+                                (ageElems.value = '');
+                                (tageElems.value = '');
+
+                                var cancel_button = document.getElementsByClassName('cansel_button');
+
+                                for (var i = 0; i < cancel_button.length; i++)
+                                {
+                                    console.log(cancel_button[i]);
+                                    if (cancel_button[i].hidden == false)
+                                    {
+                                        console.log(cancel_button[i]);
+                                        (cancel_button[i].click());
+                                    }
+                                }
+<!--                 Нажать на кнопку Cancel               console.log(parent.childNodes.length)-->
+<!--                                console.log(parent.childNodes[parent.children.length - 40]);-->
+<!--                                console.log(parent.childNodes);-->
+
+                            }
+                            else
+                            {
+                                console.log('Что пошло не так!');
+                            }
+                        }
+                    }
+                )
+
+            }
+
+
+
+
         }
     )
 
-
 </script>
+
+
+
+
+
+
 {% endblock %}
