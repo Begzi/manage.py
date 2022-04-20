@@ -87,6 +87,7 @@ def detail(request, article_id):
 
         all_comment.append(dictionory_first_level)
 
+    print(all_comment)
 
     return render(request, 'detail.html', {'article' : a, 'all_comment' : all_comment })
 
@@ -228,13 +229,6 @@ def test(request):
             dictionory_first_level['child'] = None
 
         all_comment.append(dictionory_first_level)
-    print(tmp_second_level)
-    print(all_comment)
-    for c in all_comment:
-        print(c['parent']['author_name'] )
-        if c['child'] != None:
-            pass
-            # print (c['child'][0]['author_name'])
 
 
     return render(request, 'detail1.html', {'all_comment' : all_comment })
