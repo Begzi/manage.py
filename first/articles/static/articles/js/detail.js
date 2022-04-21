@@ -1,4 +1,5 @@
 
+
     document.addEventListener
     ( "click", function ( el )
         {
@@ -25,6 +26,8 @@
 
                 var child = parent.querySelectorAll('button.answer_close_button');
                 child[child.length - 1].hidden = false;
+
+                check_have_child(el);
 
             }
             if ( el.target && el.target.classList.contains( 'answer_close_button' ) )
@@ -105,4 +108,5 @@
             }
         }
     )
+
 
