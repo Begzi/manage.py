@@ -87,7 +87,6 @@ def detail(request, article_id):
 
         all_comment.append(dictionory_first_level)
 
-    print(all_comment)
 
     return render(request, 'detail.html', {'article' : a, 'all_comment' : all_comment })
 
@@ -120,23 +119,24 @@ def ajax_post_data(request):
                 a = Article.objects.get(id = article_id)
                 a.comment_set.create(author_name= username, text = text)
                 latest_comment = a.comment_set.get(author_name= username, text = text)
-                print(latest_comment)
 
 
 
                 result['code'] = 10000
                 result['content'] = 'Успешно добавленные данные'
                 result['id'] = latest_comment.id
+                result['parents_id'] = latest_comment.id
             else:
 
                 a = Article.objects.get(id = article_id)
                 a.comment_set.create(author_name= username, text = text, parents_id= parent_id, active= False)
                 latest_comment = a.comment_set.get(author_name= username, text = text)
+
                 result['code'] = 10000
                 result['content'] = 'Успешно добавленные данные'
                 result['parents_id'] = str(latest_comment.parents_id) + '+' + str(latest_comment.id)
                 result['id'] = (latest_comment.id)
-                print(str(latest_comment.parent_id) + '+' + str(latest_comment.id))
+
         except:
             result['code'] = 10002
             result['content'] = 'Ошибка добавления данных'
@@ -182,17 +182,9 @@ def test(request):
                     if len(tmp_third_level) != 0:
                         for l in tmp_third_level:
                             num_first_tmp_plus = str(l['parents_id']).find('+')
-                            print(str(l['parents_id']))
-                            print(num_first_tmp_plus)
                             parent_second_id = str(l['parents_id'])[num_first_tmp_plus + 1:]
-                            print(str(j['parents_id'])[num_first_tmp_plus + 1:])
-                            print(str(j['id']))
                             if parent_second_id == str(j['id']):
                                 tmp_second_level.append(l)
-                                # dictionory_second_level['child'] = l
-                        #         check1 = False
-                        # if check1:
-                        #     dictionory_second_level['child'] = None
                         if (len(tmp_second_level) != 0):
                             dictionory_second_level['child'] = tmp_second_level
                         else:
@@ -201,8 +193,7 @@ def test(request):
                     else:
                         dictionory_second_level['child'] = None
                     tmp_first_level.append(dictionory_second_level)
-                    # tmp[k] = j
-                    # k = k + 1
+
             else:  #3 уровня комментарии помещаются в tmp_third_level, для того чтобы потом для комментариев 2 уровня получить их
                 if (len(tmp_third_level) != 0 ):
                     for l in tmp_third_level:
