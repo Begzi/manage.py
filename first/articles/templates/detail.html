@@ -23,7 +23,7 @@
                 {% if c.child %}
 
                         {% for x in c.child %}
-                            <div class="comment_2" name="comment_2" value="{{ c.parent.id }}+{{ x.parent.id }}"  hidden>
+                            <div class="comment_2" name="comment_2" value="{{ x.parent.id }}"  hidden>
 
                                     <em>Комментатор: </em><strong>{{ x.parent.author_name }}</strong>
                                     <p> {{ x.parent.text }} </p>
@@ -32,17 +32,17 @@
                                         {% if x.child %}
 
                                                 {% for y in x.child %}
-                                                    <div class="comment_3" name="comment_3" value="{{ c.parent.id }}+{{ x.parent.id }}+{{ y.id }}"  hidden >
+                                                    <div class="comment_3" name="comment_3" value="{{ y.parent.id }}"  hidden >
 
-                                                            <em>Комментатор: </em><strong>{{ y.author_name }}</strong>
+                                                            <em>Комментатор: </em><strong>{{ y.parent.author_name }}</strong>
                                                             <p> {{ y.text }} </p>
                                                             <div id="answer{{ y.parent.id }}"  hidden>
 
                                                                 <form action='' method="POST">
                                                                     {% csrf_token %}
 
-                                                                    <input type="text" id="add_name_comment_4_{{ c.parent.id }}+{{ x.parent.id }}+{{ y.id }}" required placeholder="Ваше имя" name="name"><br>
-                                                                    <textarea  name="text" id='add_text_comment_4_{{ c.parent.id }}+{{ x.parent.id }}+{{ y.id }}' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
+                                                                    <input type="text" id="add_name_comment_4_{{ y.parent.id }}" required placeholder="Ваше имя" name="name"><br>
+                                                                    <textarea  name="text" id='add_text_comment_4_{{ y.parent.id }}' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
                                                                     <input type="button" id=4 class="sent_button_comment" value="Оставить комментраий" >  </input>
                                 <!--                                    <input type="button" class="sent_button_comment" value="Ответить" id = '{{ x.parent.id }}'>  </input>-->
 
@@ -52,10 +52,10 @@
                                                             </div>
 
                                                             <button type="button" class = "answer_button" value="{{ y.parent.id }}" >Ответить</button>
-                                                            <button type="button" class = "cansel_button" value="{{ x.parent.id }}" hidden >Отмена</button>
+                                                            <button type="button" class = "cansel_button" value="{{ y.parent.id }}" hidden >Отмена</button>
                                                             {% if y.child %}
-                                                                <button type="button" class = "answer_show_button" value="4" >Посмотреть ответы</button>
-                                                                <button type="button" class = "answer_close_button" value="4" hidden>Закрыть</button>
+                                                                <button name=""  type="button" class = "answer_show_button" value="4" >Посмотреть ответы</button>
+                                                                <button name=""  type="button" class = "answer_close_button" value="4" hidden>Закрыть</button>
                                                             {% endif %}
                                                         <br>
 
@@ -68,8 +68,8 @@
                                         <form action='' method="POST">
                                             {% csrf_token %}
 
-                                            <input type="text" id="add_name_comment_3_{{ c.parent.id }}+{{ x.parent.id }}" required placeholder="Ваше имя" name="name"><br>
-                                            <textarea  name="text" id='add_text_comment_3_{{ c.parent.id }}+{{ x.parent.id }}' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
+                                            <input type="text" id="add_name_comment_3_{{ x.parent.id }}" required placeholder="Ваше имя" name="name"><br>
+                                            <textarea  name="text" id='add_text_comment_3_{{ x.parent.id }}' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
                                             <input type="button" id=3 class="sent_button_comment" value="Оставить комментраий" >  </input>
         <!--                                    <input type="button" class="sent_button_comment" value="Ответить" id = '{{ x.parent.id }}'>  </input>-->
 
@@ -81,8 +81,8 @@
                                     <button type="button" class = "answer_button" value="{{ x.parent.id }}" >Ответить</button>
                                     <button type="button" class = "cansel_button" value="{{ x.parent.id }}" hidden >Отмена</button>
                                     {% if x.child %}
-                                        <button type="button" class = "answer_show_button" value="3" >Посмотреть ответы</button>
-                                        <button type="button" class = "answer_close_button" value="3" hidden>Закрыть</button>
+                                        <button name="created"  type="button" class = "answer_show_button" value="3" >Посмотреть ответы</button>
+                                        <button name="created"  type="button" class = "answer_close_button" value="3" hidden>Закрыть</button>
                                     {% endif %}
 
                                 <br>
@@ -108,8 +108,8 @@
                 <button type="button" class = "answer_button" value="{{ c.parent.id }}" >Ответить</button>
                 <button type="button" class="cansel_button" value="{{ c.parent.id }}" hidden >Отмена</button>
                 {% if c.child %}
-                    <button type="button" class = "answer_show_button" value="2" >Посмотреть ответы</button>
-                    <button type="button" class = "answer_close_button"  value="2" hidden>Закрыть</button>
+                    <button name="created"  type="button" class = "answer_show_button" value="2" >Посмотреть ответы</button>
+                    <button name="created"  type="button" class = "answer_close_button"  value="2" hidden>Закрыть</button>
                 {% endif %}
 
             <br>
@@ -168,14 +168,24 @@
     function check_have_child(el)
     {
         console.log(el.target.value);
+        console.log(el.target.name);
         console.log(el.target);
-        if (el.target.value > 2)
+        console.log(el.target.parentNode.parentNode);
+        if ((el.target.value > 3 ) && (el.target.name != 'created'))
         {
-<!--<div class="comment_3" name="comment_3" value="285+290+292" style="position: relative; left: 20px;">-->
-            var parent = el.target.parentNode;
 
-            var child = parent.querySelectorAll('div.comment_');
+
+
+
+
+<!--<div class="comment_3" name="comment_3" value="292" style="position: relative; left: 20px;">-->
+            var parent = el.target.parentNode;
+            var lvl_comment = el.target.value;
             var parent_id = (el.target.parentNode.getAttribute('value'));
+    <!--            console.log(parent_id - 1)-->
+
+
+            el.target.name = 'created';
 
             var csrf = (document.getElementsByName('csrfmiddlewaretoken')[0].value);
             console.log(csrf);
@@ -197,6 +207,19 @@
                     {
                         console.log(data['code']);
                         console.log(data['content']);
+                        for (var child_number in data['content'])
+                        {
+                            username_comment = data['content'][child_number].parent.author_name;
+                            text_comment = data['content'][child_number].parent.text;
+                            data_id = { 'id': data['content'][child_number].parent.id };
+                            console.log(data_id)
+                            console.log(lvl_comment)
+                            console.log(parent)
+                            console.log(username_comment)
+                            console.log(text_comment)
+                            console.log(data['content'][child_number].child)
+<!--                            create_in_clent_frontend(data_id, lvl_comment, parent, username_comment,text_comment, csrf)-->
+                        }
                     }
                 }
             )
@@ -207,11 +230,8 @@
 $(document).on('click', 'input[class^="sent_button_comment"]', function(e)
         {
         e.preventDefault();
-
-        console.log(this.parentNode.parentNode.parentNode.getAttribute('value'))
-
-        console.log(e.target.id)
-        if (e.target.id == 1)
+        var lvl_comment = e.target.id
+        if (lvl_comment == 1)
         {
 
             var username_comment = $("#add_name_comment_1").val();
@@ -226,10 +246,10 @@ $(document).on('click', 'input[class^="sent_button_comment"]', function(e)
             var parent_id = (String(parent.getAttribute('value')));
 
 
-            var name_input ='add_name_comment_'.concat(String(e.target.id)).concat('_').concat(String(parent.getAttribute('value')));
-            var text_area ='add_text_comment_'.concat(String(e.target.id)).concat('_').concat(String(parent.getAttribute('value')));
+            var name_input ='add_name_comment_'.concat(String(lvl_comment)).concat('_').concat(String(parent.getAttribute('value')));
+            var text_area ='add_text_comment_'.concat(String(lvl_comment)).concat('_').concat(String(parent.getAttribute('value')));
 
-            document.getElementById(String(e.target.id)).hidden = false;
+            document.getElementById(String(lvl_comment)).hidden = false;
             var username_comment =  document.getElementById(name_input).value;
             var text_comment =  document.getElementById(text_area).value;
         }
@@ -257,10 +277,21 @@ $(document).on('click', 'input[class^="sent_button_comment"]', function(e)
                 data:sent_data,
                 success:function (data)
                 {
+                    create_in_clent_frontend(data, lvl_comment, parent, username_comment,text_comment, csrf);
+                }
 
-                    div_name = 'div.comment_'.concat(String(e.target.id));
-                    var lvl_comment = (String(e.target.id));
-                    var next_lvl_comment = String(parseInt(e.target.id) + 1);
+            }
+        );
+    }
+)
+
+
+function create_in_clent_frontend(data, lvl_comment, parent, username_comment,text_comment, csrf)
+{
+
+                    div_name = 'div.comment_'.concat(String(lvl_comment));
+                    var string_lvl_comment = String(lvl_comment);
+                    var next_lvl_comment = String(parseInt(lvl_comment) + 1);
 
 
                     if (data['id'] != null)
@@ -269,10 +300,10 @@ $(document).on('click', 'input[class^="sent_button_comment"]', function(e)
 
 <!--                                    <div class = "comment_#" name= "comment_#" value = 'c.parent.id'> То что создаю&ndash;&gt;-->
                         var comment = document.createElement("div");
-                        comment.setAttribute('class', 'comment_'.concat(lvl_comment));
-                        comment.setAttribute('name', 'comment_'.concat(lvl_comment));
-                        comment.setAttribute('value', data["parents_id"]);
-                        if (e.target.id > 1)
+                        comment.setAttribute('class', 'comment_'.concat(string_lvl_comment));
+                        comment.setAttribute('name', 'comment_'.concat(string_lvl_comment));
+                        comment.setAttribute('value', data["id"]);
+                        if (lvl_comment > 1)
                         {
                             comment.style.position = 'relative';
                             comment.style.left = '20px';
@@ -305,7 +336,7 @@ $(document).on('click', 'input[class^="sent_button_comment"]', function(e)
 
 <!--                            <div id="answer{{ c.parent.id  }}"  hidden>-->
                         var answer_div = document.createElement('div');
-                        div_answer_name = 'answer'.concat(String(data['parents_id']));
+                        div_answer_name = 'answer'.concat(String(data['id']));
                         answer_div.setAttribute('id', div_answer_name);
                         answer_div.hidden = true;
 
@@ -334,7 +365,7 @@ $(document).on('click', 'input[class^="sent_button_comment"]', function(e)
                         form.setAttribute('action', "");
 
                         var csrfmiddlewaretoken = document.createElement('input');
-                        csrfmiddlewaretoken.setAttribute('value', "{{ csrf_token }}");
+                        csrfmiddlewaretoken.setAttribute('value', csrf);
                         csrfmiddlewaretoken.setAttribute('name', "csrfmiddlewaretoken");
                         csrfmiddlewaretoken.setAttribute('type', "hidden");
                         form.appendChild(csrfmiddlewaretoken)
@@ -345,7 +376,7 @@ $(document).on('click', 'input[class^="sent_button_comment"]', function(e)
                         var add_name_comment = document.createElement('input');
                         add_name_comment.setAttribute('type', "text");
                         add_name_comment.setAttribute('placeholder', "Ваше имя");
-                        add_name_comment.setAttribute('id', 'add_name_comment_'.concat(next_lvl_comment).concat('_').concat(String(data['parents_id'])));
+                        add_name_comment.setAttribute('id', 'add_name_comment_'.concat(next_lvl_comment).concat('_').concat(String(data['id'])));
                         add_name_comment.setAttribute('name', "name");
                         add_name_comment.required = true;
                         form.appendChild(add_name_comment)
@@ -357,7 +388,7 @@ $(document).on('click', 'input[class^="sent_button_comment"]', function(e)
                         add_text_comment.setAttribute('cols', 20);
                         add_text_comment.setAttribute('rows', 8);
                         add_text_comment.setAttribute('placeholder', "Текст комментрия");
-                        add_text_comment.setAttribute('id', 'add_text_comment_'.concat(next_lvl_comment).concat('_').concat(String(data['parents_id'])));
+                        add_text_comment.setAttribute('id', 'add_text_comment_'.concat(next_lvl_comment).concat('_').concat(String(data['id'])));
                         add_text_comment.setAttribute('name', "text");
                         add_text_comment.required = true;
                         form.appendChild(add_text_comment)
@@ -381,7 +412,7 @@ $(document).on('click', 'input[class^="sent_button_comment"]', function(e)
                         var cansel_button = document.createElement('button');
                         cansel_button.setAttribute('class', 'cansel_button');
                         cansel_button.setAttribute('type', 'button');
-                        cansel_button.setAttribute('value', data['parents_id']);
+                        cansel_button.setAttribute('value', data['id']);
                         cansel_button.textContent = 'Отмена';
                         cansel_button.hidden = true;
 
@@ -390,7 +421,7 @@ $(document).on('click', 'input[class^="sent_button_comment"]', function(e)
                         var answer_button = document.createElement('button');
                         answer_button.setAttribute('class', 'answer_button');
                         answer_button.setAttribute('type', 'button');
-                        answer_button.setAttribute('value', data['parents_id']);
+                        answer_button.setAttribute('value', data['id']);
                         answer_button.textContent = 'Ответить';
 
                         comment.appendChild(answer_div);
@@ -399,12 +430,11 @@ $(document).on('click', 'input[class^="sent_button_comment"]', function(e)
 
 
 <!--                         Для првоерки ввода уровня комментария, если вводятся 1 уровень, то проверки есть ли внутри комментарии не нужны-->
-                        if (e.target.id > 1)
+                        if (lvl_comment> 1)
                         {
 <!--                         Для проверки ответов комментарии, если есть, поверх-->
 
                             var childs = parent.querySelectorAll(div_name)
-                            console.log(childs)
                             if (childs.length == 0)
                             {
                                 childs = parent.querySelectorAll('div')
@@ -417,7 +447,8 @@ $(document).on('click', 'input[class^="sent_button_comment"]', function(e)
 
 
 <!--                          Создаётся ещё кнопка просмотра комментариев, так как добавили комментарий-->
-
+                                if (lvl_comment != 4)
+                                {
 <!--                        <button type="button" class="answer_close_button" value="2" hidden="">Закрыть</button>-->
                                 var cansel_button = document.createElement('button');
                                 cansel_button.setAttribute('class', 'answer_close_button');
@@ -428,15 +459,17 @@ $(document).on('click', 'input[class^="sent_button_comment"]', function(e)
 
 
 <!--                         <button type="button" class="answer_show_button" value="2">Посмотреть ответы</button>-->
-                                var answer_button = document.createElement('button');
-                                answer_button.setAttribute('class', 'answer_show_button');
-                                answer_button.setAttribute('type', 'button');
-                                answer_button.setAttribute('value', lvl_comment);
-                                answer_button.textContent = 'Посмотреть ответы';
-                                cansel_button.hidden = true;
 
+                                    var answer_button = document.createElement('button');
+                                    answer_button.setAttribute('class', 'answer_show_button');
+                                    answer_button.setAttribute('type', 'button');
+                                    answer_button.setAttribute('value', lvl_comment);
+                                    answer_button.setAttribute('name', 'created');
+                                    answer_button.textContent = 'Посмотреть ответы';
+                                    cansel_button.hidden = true;
+                                    parent.insertBefore( answer_button ,childs[childs.length - 2])
+                                }
                                 childs = parent.querySelectorAll('br')
-                                parent.insertBefore( answer_button ,childs[childs.length - 2])
                                 parent.insertBefore( cansel_button ,childs[childs.length - 2])
                             }
                             else
@@ -450,8 +483,9 @@ $(document).on('click', 'input[class^="sent_button_comment"]', function(e)
 
 
                             }
-
-                            var form = e.target.parentNode;
+                            var answer_name = 'div#answer'.concat(String(parent.getAttribute('value')));
+                            var forms  = parent.querySelectorAll('form');
+                            var form = forms[forms.length - 1];
                             var ageElems = form.elements.name;
                             var tageElems = form.elements.text;
                             (ageElems.value = '');
@@ -469,7 +503,6 @@ $(document).on('click', 'input[class^="sent_button_comment"]', function(e)
                         }
                         else
                         {
-                            console.log('check')
                             var article_div = document.querySelector("div.comments");
                             if (article_div.children.length > 10)
                             {
@@ -492,10 +525,10 @@ $(document).on('click', 'input[class^="sent_button_comment"]', function(e)
                         console.log('Что пошло не так!');
                     }
                 }
-            }
-        )
-    }
-)
+
+
+
+
 
 </script>
 

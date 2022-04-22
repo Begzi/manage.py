@@ -53,8 +53,8 @@
 
                                                     <button type="button" class = "answer_button" value="{{ y.parent.id }}" >Ответить</button>
                                                     {% if y.child %}
-                                                        <button type="button" class = "answer_show_button" value="4" >Посмотреть ответы</button>
-                                                        <button type="button" class = "answer_close_button" value="4" hidden>Закрыть</button>
+                                                        <button name="" type="button" class = "answer_show_button" value="4" >Посмотреть ответы</button>
+                                                        <button name=""  type="button" class = "answer_close_button" value="4" hidden>Закрыть</button>
                                                     {% endif %}
                                                     <button type="button" class = "cansel_button" value="{{ x.parent.id }}" hidden >Отмена</button>
                                                 </div>
@@ -77,8 +77,8 @@
 
                                 <button type="button" class = "answer_button" value="{{ x.parent.id }}" >Ответить</button>
                                 {% if x.child %}
-                                    <button type="button" class = "answer_show_button" value="3" >Посмотреть ответы</button>
-                                    <button type="button" class = "answer_close_button" value="3" hidden>Закрыть</button>
+                                    <button name="created"  type="button" class = "answer_show_button" value="3" >Посмотреть ответы</button>
+                                    <button name="created"  type="button" class = "answer_close_button" value="3" hidden>Закрыть</button>
                                 {% endif %}
                                 <button type="button" class = "cansel_button" value="{{ x.parent.id }}" hidden >Отмена</button>
 
@@ -103,8 +103,8 @@
 
                 <button type="button" class = "answer_button" value="{{ c.parent.id }}" >Ответить</button>
                 {% if c.child %}
-                    <button type="button" class = "answer_show_button" value="2" >Посмотреть ответы</button>
-                    <button type="button" class = "answer_close_button"  value="2" hidden>Закрыть</button>
+                    <button name="created"  type="button" class = "answer_show_button" value="2" >Посмотреть ответы</button>
+                    <button name="created"  type="button" class = "answer_close_button"  value="2" hidden>Закрыть</button>
                 {% endif %}
                 <button type="button" class="cansel_button" value="{{ c.parent.id }}" hidden >Отмена</button>
 
@@ -129,3 +129,10 @@
 </div>
 
 
+<button type="button" class="answer_button" value="473">Ответить</button>
+<!--<button class="answer_button" type="button" value="474">Ответить</button>-->
+<button type="button" class="cansel_button" value="473" hidden="">Отмена</button>
+<button name="created" type="button" class="answer_show_button" value="4" hidden="">Посмотреть ответы</button> Должен быть внутри
+<button name="" type="button" class="answer_close_button" value="4">Закрыть</button>
+<button class="answer_button" type="button" value="474">Ответить</button> Должен быть внутри
+<button class="answer_close_button" type="button" value="4">Закрыть</button>
