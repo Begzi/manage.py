@@ -1,6 +1,7 @@
 from django.http import  HttpResponse, Http404, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Article, Comment
+from .forms import ArticleForm
 import json
 from django.urls import reverse
 from django.utils import timezone
@@ -8,13 +9,28 @@ from django.core import serializers
 
 def index(request):
     latest_articles_list = Article.objects.order_by('-pub_date')[:5]
-    parent ={}
-    parent['a'] = 123
 
-    print(parent)
-    if parent.get('b') == None:
-        print('check')
     return render(request, 'list.html', {'latest_articles_list' : latest_articles_list})
+
+def add_article(request):
+    error = ""
+    print(request)
+    if request.method == "POST":
+        new_article = Article()
+        new_article.title = request.POST['title']
+        new_article.text = request.POST['text']
+        new_article.pub_date = timezone.now()
+        new_article.pub_date = timezone.now()
+        new_article.save()
+        return redirect('home')
+
+
+    print('checl2')
+    form_article = ArticleForm()
+
+
+    return render(request, 'addarticle.html', {'form_article' : form_article, 'error': error })
+
 
 def create_api(parent, childs, end_number, strart_num):
     dictionory_number_level ={}
@@ -140,82 +156,3 @@ def ajax_add_comment(request):
     return JsonResponse(result)
 
 
-
-def test(request):
-    try:
-        a = Article.objects.get(id = 1)
-    except:
-        raise Http404("Статья не найдена!")
-
-    latest_comments_list = a.comment_set.filter(active=True).order_by('-id')[:10]
-
-    latest_comments_comments_list = a.comment_set.filter(active=False).order_by('-id')
-
-    all_comment = []
-
-    tmp_third_level = []
-    for i in latest_comments_list:
-        i = comment_to_dictionary(i)
-        id = str(i['id'])
-        dictionory_first_level ={}
-        dictionory_first_level['parent'] = i
-        tmp_first_level = []
-        k = 0
-        check = True
-        for j in latest_comments_comments_list:
-            j =  comment_to_dictionary(j)
-
-            tmp_second_level = []
-            dictionory_second_level = {}
-
-            num_first_plus = str(j['parents_id']).find('+')
-
-            if num_first_plus == -1:
-                parent_frist_id = str(j['parents_id'])
-                if id == parent_frist_id:
-                    dictionory_second_level['parent'] = j
-                    # chack1 = True
-                    if len(tmp_third_level) != 0:
-                        for l in tmp_third_level:
-                            num_first_tmp_plus = str(l['parents_id']).find('+')
-                            parent_second_id = str(l['parents_id'])[num_first_tmp_plus + 1:]
-                            if parent_second_id == str(j['id']):
-                                tmp_second_level.append(l)
-                        if (len(tmp_second_level) != 0):
-                            dictionory_second_level['child'] = tmp_second_level
-                        else:
-                            dictionory_second_level['child'] = None
-
-                    else:
-                        dictionory_second_level['child'] = None
-                    tmp_first_level.append(dictionory_second_level)
-
-            else:  #3 уровня комментарии помещаются в tmp_third_level, для того чтобы потом для комментариев 2 уровня получить их
-                if (len(tmp_third_level) != 0 ):
-                    for l in tmp_third_level:
-                        if l['id'] == j['id']:
-                            check = False
-                            break
-
-                if check:
-                    parent_frist_id = str(j['parents_id'])[:num_first_plus]
-                    num_second_plus = str(j['parents_id'])[num_first_plus + 1:].find('+')
-
-                    if num_second_plus != -1: #Выше 3 уровня вложенные комментарии не берём
-                        pass
-                    else:
-                        parent_second_id = str(j['parents_id'])[num_first_plus + 1:]
-                        tmp_third_level.append(j)
-
-
-
-
-        if len(tmp_first_level) != 0:
-            dictionory_first_level['child'] = tmp_first_level
-        else:
-            dictionory_first_level['child'] = None
-
-        all_comment.append(dictionory_first_level)
-
-
-    return render(request, 'detail1.html', {'all_comment' : all_comment })

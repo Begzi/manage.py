@@ -7,8 +7,12 @@
     {% if latest_articles_list %}
         {% for a in latest_articles_list %}
             <a href="{% url 'articles:detail' a.id %}"> {{a.title}} </a>
+            <br>
         {% endfor %}
     {% else %}
         Статьи не найдены
     {% endif %}
+<br>
+<br>
+<a type="button" class="new_article" href="{% url 'articles:add_article'  %}" >  Создать новую статью</a>
 {% endblock %}
