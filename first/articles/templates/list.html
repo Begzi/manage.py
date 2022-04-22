@@ -6,13 +6,30 @@
 
     {% if latest_articles_list %}
         {% for a in latest_articles_list %}
-            <a href="{% url 'articles:detail' a.id %}"> {{a.title}} </a>
+            <h2>Статья: {{a.title}}</h2>
+            <a href="{% url 'articles:detail' a.id %}"><button type="button">Перейти к статьте</button> </a>
             <br>
         {% endfor %}
+
+        <nav class='list-pages'>
+            <ul>
+                {% for p in latest_articles_list.paginator.page_range %}
+                <li class='page-num'>
+                    <a href="?page={{ p }}">{{ p }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </nav>
     {% else %}
         Статьи не найдены
     {% endif %}
 <br>
 <br>
-<a type="button" class="new_article" href="{% url 'articles:add_article'  %}" >  Создать новую статью</a>
+<a  class="new_article" href="{% url 'articles:add_article'  %}" > <button type="button"> Добавить новую статью</button></a>
+
+
+    {% load static %}
+    <script type="text/javascript" src="{% static 'articles/css/style.css' %}"></script>
+
+
 {% endblock %}

@@ -2,19 +2,20 @@ from django.http import  HttpResponse, Http404, HttpResponseRedirect, JsonRespon
 from django.shortcuts import render, redirect
 from .models import Article, Comment
 from .forms import ArticleForm
-import json
-from django.urls import reverse
 from django.utils import timezone
-from django.core import serializers
+from django.core.paginator import Paginator
 
 def index(request):
     latest_articles_list = Article.objects.order_by('-pub_date')[:5]
 
-    return render(request, 'list.html', {'latest_articles_list' : latest_articles_list})
+    paginator = Paginator(latest_articles_list, 5)
+
+    page_number = request.GET.get('page')
+    post = paginator.get_page(page_number)
+    return render(request, 'list.html', {'latest_articles_list' : post})
 
 def add_article(request):
     error = ""
-    print(request)
     if request.method == "POST":
         new_article = Article()
         new_article.title = request.POST['title']
@@ -22,10 +23,9 @@ def add_article(request):
         new_article.pub_date = timezone.now()
         new_article.pub_date = timezone.now()
         new_article.save()
-        return redirect('home')
+        return redirect('articles:home')
 
 
-    print('checl2')
     form_article = ArticleForm()
 
 
@@ -62,7 +62,6 @@ def detail(request, article_id):
         a = Article.objects.get(id = article_id)
     except:
         raise Http404("Статья не найдена!")
-
     latest_comments_list = a.comment_set.filter(active=True).order_by('-id')[:10]
 
     latest_comments_comments_list = a.comment_set.filter(active=False).order_by('id')
@@ -74,8 +73,12 @@ def detail(request, article_id):
         comment = create_api(comment, latest_comments_comments_list, 4, 1)
         all_comment.append(comment)
 
+    paginator = Paginator(all_comment, 10)
 
-    return render(request, 'detail.html', {'article' : a, 'all_comment' : all_comment })
+    page_number = request.GET.get('page')
+    post = paginator.get_page(page_number)
+
+    return render(request, 'detail.html', {'article' : a, 'all_comment' : post })
 
 def comment_to_dictionary(model_comment_object):
     if model_comment_object == None:

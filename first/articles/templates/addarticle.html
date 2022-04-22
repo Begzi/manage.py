@@ -3,6 +3,7 @@
 {% block title %}Добавление статьи{% endblock %}
 
 {% block content%}
+<a  class="new_article" href="{% url 'articles:home'  %}" > <button type="button">Назад</button></a>
 <h1>Добавление Статьи</h1>
 <br>
 {{ error }}
