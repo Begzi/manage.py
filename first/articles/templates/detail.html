@@ -211,14 +211,25 @@
                         {
                             username_comment = data['content'][child_number].parent.author_name;
                             text_comment = data['content'][child_number].parent.text;
-                            data_id = { 'id': data['content'][child_number].parent.id };
+                            if (data['content'][child_number].child != null)
+                            {
+                                var child_have = 'Yes';
+                            }
+                            else
+                            {
+                                var child_have = 'No';
+                            }
+                            data_id = {
+                                'id': data['content'][child_number].parent.id,
+                                'child' : child_have
+                                 };
                             console.log(data_id)
                             console.log(lvl_comment)
                             console.log(parent)
                             console.log(username_comment)
                             console.log(text_comment)
-                            console.log(data['content'][child_number].child)
-<!--                            create_in_clent_frontend(data_id, lvl_comment, parent, username_comment,text_comment, csrf)-->
+                            console.log(child_have)
+                            create_in_clent_frontend(data_id, lvl_comment, parent, username_comment,text_comment, csrf)
                         }
                     }
                 }
@@ -428,7 +439,33 @@ function create_in_clent_frontend(data, lvl_comment, parent, username_comment,te
                         comment.appendChild(answer_button);
                         comment.appendChild(cansel_button);
 
+<!--                        Для проверки, просмотра комментариев, которые выше 3 уровня, появления кнопки показать комментарии-->
+                        if (data['child'] == 'Yes')
+                        {
 
+<!--                        <button type="button" class="answer_close_button" value="2" hidden="">Закрыть</button>-->
+                                var cansel_button = document.createElement('button');
+                                cansel_button.setAttribute('class', 'answer_close_button');
+                                cansel_button.setAttribute('type', 'button');
+                                cansel_button.setAttribute('value', lvl_comment);
+                                cansel_button.textContent = 'Закрыть';
+                                cansel_button.hidden = true;
+
+
+<!--                         <button type="button" class="answer_show_button" value="2">Посмотреть ответы</button>-->
+
+                                var answer_button = document.createElement('button');
+                                answer_button.setAttribute('class', 'answer_show_button');
+                                answer_button.setAttribute('type', 'button');
+                                answer_button.setAttribute('value', lvl_comment);
+                                answer_button.setAttribute('name', '');
+                                answer_button.textContent = 'Посмотреть ответы';
+                                answer_button.hidden = false;
+
+                                comment.append(answer_button);
+                                comment.append(cansel_button);
+
+                        }
 <!--                         Для првоерки ввода уровня комментария, если вводятся 1 уровень, то проверки есть ли внутри комментарии не нужны-->
                         if (lvl_comment> 1)
                         {
@@ -446,8 +483,9 @@ function create_in_clent_frontend(data, lvl_comment, parent, username_comment,te
                                 parent.insertBefore( comment , childs[0])
 
 
-<!--                          Создаётся ещё кнопка просмотра комментариев, так как добавили комментарий-->
-                                if (lvl_comment != 4)
+<!--                          Создаётся ещё кнопка просмотра комментариев для родительского DIV, так как добавили комментарий-->
+                                var check_answer_button = parent.querySelectorAll('button.answer_show_button');
+                                if (check_answer_button.length == 0)
                                 {
 <!--                        <button type="button" class="answer_close_button" value="2" hidden="">Закрыть</button>-->
                                 var cansel_button = document.createElement('button');
@@ -466,11 +504,11 @@ function create_in_clent_frontend(data, lvl_comment, parent, username_comment,te
                                     answer_button.setAttribute('value', lvl_comment);
                                     answer_button.setAttribute('name', 'created');
                                     answer_button.textContent = 'Посмотреть ответы';
-                                    cansel_button.hidden = true;
+                                    answer_button.hidden = true;
+                                    childs = parent.querySelectorAll('br')
+                                    parent.insertBefore( cansel_button ,childs[childs.length - 2])
                                     parent.insertBefore( answer_button ,childs[childs.length - 2])
                                 }
-                                childs = parent.querySelectorAll('br')
-                                parent.insertBefore( cansel_button ,childs[childs.length - 2])
                             }
                             else
                             {

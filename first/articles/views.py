@@ -49,7 +49,7 @@ def detail(request, article_id):
 
     latest_comments_list = a.comment_set.filter(active=True).order_by('-id')[:10]
 
-    latest_comments_comments_list = a.comment_set.filter(active=False).order_by('-id')
+    latest_comments_comments_list = a.comment_set.filter(active=False).order_by('id')
 
     all_comment = []
 
@@ -82,17 +82,19 @@ def ajax_check_comment(request):
 
     try:
         childs_comment = Comment.objects.filter(parents_id = parent_id)
+        all_childs_comment = Comment.objects.filter(active=False)
         all_comment_child = []
+        print('parent_id')
+
         for child in childs_comment:
             child= comment_to_dictionary(child)
-            childs_childs_comment.objects.filter(parents_id=child['id'])
-            if
-            child = create_api(child, childs_childs_comment, 2, 1)
+            child = create_api(child, all_childs_comment, 2, 1)
             all_comment_child.append(child)
 
         print(all_comment_child)
         result['code'] = 10000
         result['content'] = all_comment_child
+        result['child'] = 'No' # Для комментариев 4 уровня и выше, в будущем нужен.
 
     except:
         result['code'] = 10002
