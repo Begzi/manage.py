@@ -1,28 +1,5 @@
 
 
-
-#footer {
-	box-sizing: border-box;
-
-	background: #3F4137;
-	padding: 5px;
-	color: #aaa;
-	font-size: 14px;
-	font-family: Verdana, Geneva, Arial, Helvetica;
-	text-align: left;
-	overflow: hidden;
-}
-#footer a {
-	text-decoration: underline;
-	color: #aaa;
-}
-
-
-.form-button {
-    min-width: 200px;
-    font-size: 16px;
-}
-
 .list-pages {
 	text-align: center;
 	margin: 0 0 20px 0;

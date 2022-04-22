@@ -73,7 +73,8 @@ def detail(request, article_id):
         comment = create_api(comment, latest_comments_comments_list, 4, 1)
         all_comment.append(comment)
 
-    paginator = Paginator(all_comment, 10)
+    print(all_comment)
+    paginator = Paginator(all_comment, 5)
 
     page_number = request.GET.get('page')
     post = paginator.get_page(page_number)
@@ -97,20 +98,17 @@ def comment_to_dictionary(model_comment_object):
 def ajax_check_comment(request):
     result = {}
     parent_id = str(request.POST['parent_id'])
-    print(parent_id)
 
     try:
         childs_comment = Comment.objects.filter(parents_id = parent_id)
         all_childs_comment = Comment.objects.filter(active=False)
         all_comment_child = []
-        print('parent_id')
 
         for child in childs_comment:
             child= comment_to_dictionary(child)
             child = create_api(child, all_childs_comment, 2, 1)
             all_comment_child.append(child)
 
-        print(all_comment_child)
         result['code'] = 10000
         result['content'] = all_comment_child
         result['child'] = 'No' # Для комментариев 4 уровня и выше, в будущем нужен.
