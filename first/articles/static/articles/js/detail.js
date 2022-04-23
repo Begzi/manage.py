@@ -1,11 +1,129 @@
 
-    function check_have_child(el)
+
+    document.addEventListener
+    ( "click", function ( el )
+        {
+
+            if ( el.target && el.target.classList.contains( 'answer_show_button' ) )  //Посмотреть дочерние комментарии
+            {
+                el.target.hidden = true;
+
+
+                var parent = el.target.parentNode;
+
+                name_div ='div.comment_'.concat(el.target.value.toString())
+                var child = parent.querySelectorAll(name_div);
+                for (var ch = 0; ch < child.length; ch++ )
+                {
+                    child[ch].style.position = 'relative';
+                    child[ch].style.left = '20px';
+                    child[ch].hidden = false;
+
+                }
+
+
+<!--               Кнопка отмены просмотра комментария, класс назвывается answer_close_button последний -->
+
+                var child = parent.querySelectorAll('button.answer_close_button');
+                child[child.length - 1].hidden = false;
+
+                check_have_child(el);  //вызывается для проверки существования дочерних комментариев, с 3 уровня комментариев
+
+            }
+            if ( el.target && el.target.classList.contains( 'answer_close_button' ) )  //закрыть просмотр дочерних комментариев
+            {
+<!--                el.target.hidden = true;-->
+
+                var parent = el.target.parentNode;
+
+                var child = parent.querySelectorAll('button.answer_show_button');
+                var child_1 = parent.querySelectorAll('button.answer_close_button');
+
+                for (var ch = 0; ch < child.length; ch++ )
+                {
+                    child[ch].hidden = false;
+                    child_1[ch].hidden =true;
+                }
+
+
+                child = parent.getElementsByTagName('div');
+                for (var ch in child)
+                {
+                    child[ch].hidden = true;
+                }
+
+
+                var cansel_button = parent.getElementsByClassName('cansel_button');
+
+                for (var i = 0; i < cansel_button.length; i++)
+                {
+                    if (cansel_button[i].hidden == false)
+                    {
+                        (cansel_button[i].click());
+                    }
+                }
+
+<!--                cansel_button-->
+            }
+            else if ( el.target && el.target.classList.contains( 'answer_button' ) )   //Кнопка ответить, после чего появляется форма ввода комментария
+            {
+
+                tmp_text = 'answer'.concat(el.target.value.toString());
+
+<!--                Форма ввода комментария, назвывается ансвер + id-->
+                document.getElementById(tmp_text).hidden = false;
+
+                var answer_button = document.getElementsByClassName('answer_button');
+                var cansel_button = document.getElementsByClassName('cansel_button');
+
+
+
+                for (var i = 0; i < answer_button.length; i++)
+                {
+                   answer_button[i].hidden = true;
+                   if (el.target == answer_button[i])
+                   {
+                        cansel_button[i].hidden = false;
+                   }
+                }
+
+                document.getElementById("add_comment").hidden = true;
+
+            }
+            else if (el.target && el.target.classList.contains( 'cansel_button' )) //отмена ввода в форму (просто закрывает форму)
+            {
+
+                tmp_text = 'answer'.concat(el.target.value.toString());
+                document.getElementById(tmp_text).hidden = true;
+
+                var answer_button = document.getElementsByClassName('answer_button');
+                var cansel_button = document.getElementsByClassName('cansel_button');
+
+                for (var i = 0; i < answer_button.length; i++)
+                {
+                   answer_button[i].hidden = false;
+                   cansel_button[i].hidden = true;
+                }
+                document.getElementById("add_comment").hidden = false;
+            }
+        }
+    )
+
+
+
+
+
+
+
+
+
+
+    function check_have_child(el) //Для проверки существования дочерний комментариев
     {
-        console.log(el.target.value);
-        console.log(el.target.name);
-        console.log(el.target);
-        console.log(el.target.parentNode.parentNode);
-        if ((el.target.value > 3 ) && (el.target.name != 'created'))
+
+
+        if ((el.target.value > 3 ) && (el.target.name != 'created'))   //при нажатии посмотреть комментариев с 2 уровня,
+        //проверяем, есть ли у комментариев 3 уровня дочерние
         {
 
 
@@ -21,9 +139,7 @@
 
             el.target.name = 'created';
 
-            var csrf = (document.getElementsByName('csrfmiddlewaretoken')[0].value);
-            console.log(csrf);
-            console.log(parent_id);
+            var csrf = (document.getElementsByName('csrfmiddlewaretoken')[0].value);     //csrf записали в скрытый div. jinja не работает в js
             sent_data =
             {
                 'parent_id': parent_id,
@@ -57,13 +173,7 @@
                                 'id': data['content'][child_number].parent.id,
                                 'child' : child_have
                                  };
-                            console.log(data_id)
-                            console.log(lvl_comment)
-                            console.log(parent)
-                            console.log(username_comment)
-                            console.log(text_comment)
-                            console.log(child_have)
-                            create_in_clent_frontend(data_id, lvl_comment, parent, username_comment,text_comment, csrf)
+                            create_in_clent_frontend(data_id, lvl_comment, parent, username_comment,text_comment, csrf)  //для достроения дерева комментариев
                         }
                     }
                 }
@@ -72,7 +182,7 @@
         }
     }
 
-$(document).on('click', 'input[class^="sent_button_comment"]', function(e)
+$(document).on('click', 'input[class^="sent_button_comment"]', function(e)  //нажата кнопка отправки формы комментария
         {
         e.preventDefault();
         var lvl_comment = e.target.id
@@ -131,10 +241,10 @@ $(document).on('click', 'input[class^="sent_button_comment"]', function(e)
 )
 
 
-function create_in_clent_frontend(data, lvl_comment, parent, username_comment,text_comment, csrf)
+function create_in_clent_frontend(data, lvl_comment, parent, username_comment,text_comment, csrf)  //достроения дерева комментариев в html
 {
 
-                    div_name = 'div.comment_'.concat(String(lvl_comment));
+                    div_name = 'div.comment_'.concat(String(lvl_comment));   //ккоменатрии все находятся в div с классов, div_comment_lvl
                     var string_lvl_comment = String(lvl_comment);
                     var next_lvl_comment = String(parseInt(lvl_comment) + 1);
 
@@ -394,119 +504,8 @@ function create_in_clent_frontend(data, lvl_comment, parent, username_comment,te
                     }
                     else
                     {
-                        console.log('Что пошло не так!');
+                        console.log('id комментария не найдена');
                     }
                 }
-
-
-
-    document.addEventListener
-    ( "click", function ( el )
-        {
-
-            if ( el.target && el.target.classList.contains( 'answer_show_button' ) )
-            {
-                el.target.hidden = true;
-
-
-                var parent = el.target.parentNode;
-
-                name_div ='div.comment_'.concat(el.target.value.toString())
-                var child = parent.querySelectorAll(name_div);
-                for (var ch = 0; ch < child.length; ch++ )
-                {
-                    child[ch].style.position = 'relative';
-                    child[ch].style.left = '20px';
-                    child[ch].hidden = false;
-
-                }
-
-
-<!--               Кнопка отмены просмотра комментария, класс назвывается answer_close_button последний -->
-
-                var child = parent.querySelectorAll('button.answer_close_button');
-                child[child.length - 1].hidden = false;
-
-                check_have_child(el);
-
-            }
-            if ( el.target && el.target.classList.contains( 'answer_close_button' ) )
-            {
-<!--                el.target.hidden = true;-->
-
-                var parent = el.target.parentNode;
-
-                var child = parent.querySelectorAll('button.answer_show_button');
-                var child_1 = parent.querySelectorAll('button.answer_close_button');
-
-                for (var ch = 0; ch < child.length; ch++ )
-                {
-                    child[ch].hidden = false;
-                    child_1[ch].hidden =true;
-                }
-
-
-                child = parent.getElementsByTagName('div');
-                for (var ch in child)
-                {
-                    child[ch].hidden = true;
-                }
-
-
-                var cansel_button = parent.getElementsByClassName('cansel_button');
-
-                for (var i = 0; i < cansel_button.length; i++)
-                {
-                    if (cansel_button[i].hidden == false)
-                    {
-                        (cansel_button[i].click());
-                    }
-                }
-
-<!--                cansel_button-->
-            }
-            else if ( el.target && el.target.classList.contains( 'answer_button' ) )
-            {
-
-                tmp_text = 'answer'.concat(el.target.value.toString());
-
-<!--                Форма ввода комментария, назвывается ансвер + id-->
-                document.getElementById(tmp_text).hidden = false;
-
-                var answer_button = document.getElementsByClassName('answer_button');
-                var cansel_button = document.getElementsByClassName('cansel_button');
-
-
-
-                for (var i = 0; i < answer_button.length; i++)
-                {
-                   answer_button[i].hidden = true;
-                   if (el.target == answer_button[i])
-                   {
-                        cansel_button[i].hidden = false;
-                   }
-                }
-
-                document.getElementById("add_comment").hidden = true;
-
-            }
-            else if (el.target && el.target.classList.contains( 'cansel_button' ))
-            {
-
-                tmp_text = 'answer'.concat(el.target.value.toString());
-                document.getElementById(tmp_text).hidden = true;
-
-                var answer_button = document.getElementsByClassName('answer_button');
-                var cansel_button = document.getElementsByClassName('cansel_button');
-
-                for (var i = 0; i < answer_button.length; i++)
-                {
-                   answer_button[i].hidden = false;
-                   cansel_button[i].hidden = true;
-                }
-                document.getElementById("add_comment").hidden = false;
-            }
-        }
-    )
 
 

@@ -13,36 +13,36 @@
 <hr>
 <div class="comments" id="comments">
 {% if all_comment %}
-    {% for c in all_comment %}
-        <div class = "comment_1" name= "comment" value = '{{ c.parent.id }}' >
+    {% for c_1 in all_comment %}
+        <div class = "comment_1" name= "comment" value = '{{ c_1.parent.id }}' >
 
 
-                <em>Комментатор: </em><strong>{{ c.parent.author_name }}</strong>
-                <p> {{ c.parent.text }} </p>
+                <em>Комментатор: </em><strong>{{ c_1.parent.author_name }}</strong>
+                <p> {{ c_1.parent.text }} </p>
 
-                {% if c.child %}
+                {% if c_1.child %}
 
-                        {% for x in c.child %}
-                            <div class="comment_2" name="comment_2" value="{{ x.parent.id }}"  hidden>
+                        {% for c_2 in c_1.child %}
+                            <div class="comment_2" name="comment_2" value="{{ c_2.parent.id }}"  hidden>
 
-                                    <em>Комментатор: </em><strong>{{ x.parent.author_name }}</strong>
-                                    <p> {{ x.parent.text }} </p>
+                                    <em>Комментатор: </em><strong>{{ c_2.parent.author_name }}</strong>
+                                    <p> {{ c_2.parent.text }} </p>
 
         <!--                                <div answer анадлш-->
-                                        {% if x.child %}
+                                        {% if c_2.child %}
 
-                                                {% for y in x.child %}
-                                                    <div class="comment_3" name="comment_3" value="{{ y.parent.id }}"  hidden >
+                                                {% for c_3 in c_2.child %}
+                                                    <div class="comment_3" name="comment_3" value="{{ c_3.parent.id }}"  hidden >
 
-                                                            <em>Комментатор: </em><strong>{{ y.parent.author_name }}</strong>
-                                                            <p> {{ y.text }} </p>
-                                                            <div id="answer{{ y.parent.id }}"  hidden>
+                                                            <em>Комментатор: </em><strong>{{ c_3.parent.author_name }}</strong>
+                                                            <p> {{ c_3.text }} </p>
+                                                            <div id="answer{{ c_3.parent.id }}"  hidden>
 
                                                                 <form action='' method="POST">
                                                                     {% csrf_token %}
 
-                                                                    <input type="text" id="add_name_comment_4_{{ y.parent.id }}" required placeholder="Ваше имя" name="name"><br>
-                                                                    <textarea  name="text" id='add_text_comment_4_{{ y.parent.id }}' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
+                                                                    <input type="text" id="add_name_comment_4_{{ c_3.parent.id }}" required placeholder="Ваше имя" name="name"><br>
+                                                                    <textarea  name="text" id='add_text_comment_4_{{ c_3.parent.id }}' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
                                                                     <input type="button" id=4 class="sent_button_comment" value="Оставить комментраий" >  </input>
                                 <!--                                    <input type="button" class="sent_button_comment" value="Ответить" id = '{{ x.parent.id }}'>  </input>-->
 
@@ -51,9 +51,9 @@
 
                                                             </div>
 
-                                                            <button type="button" class = "answer_button" value="{{ y.parent.id }}" >Ответить</button>
-                                                            <button type="button" class = "cansel_button" value="{{ y.parent.id }}" hidden >Отмена</button>
-                                                            {% if y.child %}
+                                                            <button type="button" class = "answer_button" value="{{ c_3.parent.id }}" >Ответить</button>
+                                                            <button type="button" class = "cansel_button" value="{{ c_3.parent.id }}" hidden >Отмена</button>
+                                                            {% if c_3.child %}
                                                                 <button name=""  type="button" class = "answer_show_button" value="4" >Посмотреть ответы</button>
                                                                 <button name=""  type="button" class = "answer_close_button" value="4" hidden>Закрыть</button>
                                                             {% endif %}
@@ -63,24 +63,23 @@
                                                     </div>
                                                 {% endfor %}
                                         {% endif %}
-                                    <div id="answer{{ x.parent.id }}"  hidden>
+                                    <div id="answer{{ c_2.parent.id }}"  hidden>
 
                                         <form action='' method="POST">
                                             {% csrf_token %}
 
-                                            <input type="text" id="add_name_comment_3_{{ x.parent.id }}" required placeholder="Ваше имя" name="name"><br>
-                                            <textarea  name="text" id='add_text_comment_3_{{ x.parent.id }}' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
+                                            <input type="text" id="add_name_comment_3_{{ c_2.parent.id }}" required placeholder="Ваше имя" name="name"><br>
+                                            <textarea  name="text" id='add_text_comment_3_{{ c_2.parent.id }}' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
                                             <input type="button" id=3 class="sent_button_comment" value="Оставить комментраий" >  </input>
-        <!--                                    <input type="button" class="sent_button_comment" value="Ответить" id = '{{ x.parent.id }}'>  </input>-->
 
                                         </form>
 
 
                                     </div>
 
-                                    <button type="button" class = "answer_button" value="{{ x.parent.id }}" >Ответить</button>
-                                    <button type="button" class = "cansel_button" value="{{ x.parent.id }}" hidden >Отмена</button>
-                                    {% if x.child %}
+                                    <button type="button" class = "answer_button" value="{{ c_2.parent.id }}" >Ответить</button>
+                                    <button type="button" class = "cansel_button" value="{{ c_2.parent.id }}" hidden >Отмена</button>
+                                    {% if c_2.child %}
                                         <button name="created"  type="button" class = "answer_show_button" value="3" >Посмотреть ответы</button>
                                         <button name="created"  type="button" class = "answer_close_button" value="3" hidden>Закрыть</button>
                                     {% endif %}
@@ -90,14 +89,13 @@
                             </div>
                         {% endfor %}
                 {% endif %}
-                <div id="answer{{ c.parent.id }}"  hidden>
+                <div id="answer{{ c_1.parent.id }}"  hidden>
 
                     <form action='' method="POST">
                         {% csrf_token %}
 
-                        <input type="text" id="add_name_comment_2_{{ c.parent.id }}" required placeholder="Ваше имя" name="name"><br>
-                        <textarea  name="text" id='add_text_comment_2_{{ c.parent.id }}' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
-<!--                        <input type="button" class="sent_button_comment" value="Ответить" id = '{{ c.parent.id }}'>  </input>-->
+                        <input type="text" id="add_name_comment_2_{{ c_1.parent.id }}" required placeholder="Ваше имя" name="name"><br>
+                        <textarea  name="text" id='add_text_comment_2_{{ c_1.parent.id }}' required="" placeholder="Текст комментрия" cols="30" rows="10"></textarea><br>
                         <input type="button" id=2 class="sent_button_comment" value="Оставить комментраий" >  </input>
 
                     </form>
@@ -105,9 +103,9 @@
 
                 </div>
 
-                <button type="button" class = "answer_button" value="{{ c.parent.id }}" >Ответить</button>
-                <button type="button" class="cansel_button" value="{{ c.parent.id }}" hidden >Отмена</button>
-                {% if c.child %}
+                <button type="button" class = "answer_button" value="{{ c_1.parent.id }}" >Ответить</button>
+                <button type="button" class="cansel_button" value="{{ c_1.parent.id }}" hidden >Отмена</button>
+                {% if c_1.child %}
                     <button name="created"  type="button" class = "answer_show_button" value="2" >Посмотреть ответы</button>
                     <button name="created"  type="button" class = "answer_close_button"  value="2" hidden>Закрыть</button>
                 {% endif %}
